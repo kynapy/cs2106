@@ -22,8 +22,7 @@ else
 #
 # Note: See Lab02Qn.pdf for format of output file. Marks will be deducted for missing elements.
 #
-    echo "Test date and time: $(date +%A), $(date +%d) $(date +%B) $(date +%Y), $(date +%T)" > results.out
-    echo "" >> results.out
+    echo -e "Test date and time: $(date +%A), $(date +%d) $(date +%B) $(date +%Y), $(date +%T)\n" > results.out
     numFiles=0
 # Iterate over every submission directory
     for i in subs/*; do 
