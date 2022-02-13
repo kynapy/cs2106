@@ -31,14 +31,14 @@ else
         gcc $i/sum.c $i/utils.c -o $i/a.out &> /dev/null # Compile C code
 
         if [[ $? -ne 0 ]]; then # Print compile error message to output file
-            echo "Directory $i has a compile error." >> results.out 
+            echo "Directory $out has a compile error." >> results.out 
         fi
 
     # Generate output from C code using *.in files in ref
         score=0
         sample=1
         for input in ref/*.in; do
-            $i/a.out < $input > $i/$sample.out 
+            $i/a.out < $input > $i/$sample.out 2>/dev/null
             diff $i/$sample.out ref/"s"$sample".in".out &> /dev/null
             if [[ $? -eq 0 ]]; then
                 score=$((score+1)) # Compare with reference output files and award 1 mark if they are identical
