@@ -10,7 +10,7 @@ else
     rm ref/*.out
 
 # Compile the reference program
-    gcc ref/sum.c ref/utils.c -o ref/$1
+    gcc ref/*.c -o ref/$1
 
 # Generate reference output files
     for i in ref/*.in; do
