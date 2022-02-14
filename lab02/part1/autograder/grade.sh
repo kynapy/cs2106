@@ -13,8 +13,10 @@ else
     gcc ref/*.c -o ref/$1
 
 # Generate reference output files
+    numTests=0
     for i in ref/*.in; do
         ref/$1 < $i > $i.out
+        numTests=$((numTests+1))
     done
 
 # Now mark submissions
@@ -27,7 +29,7 @@ else
 # Iterate over every submission directory
     for i in subs/*; do 
         out=$(echo $i|cut -d'/' -f 2)
-        gcc $i/sum.c $i/utils.c -o $i/a.out &> /dev/null # Compile C code
+        gcc $i/*.c -o $i/a.out &> /dev/null # Compile C code
 
         if [[ $? -ne 0 ]]; then # Print compile error message to output file
             echo "Directory $out has a compile error." >> results.out 
@@ -44,7 +46,7 @@ else
             fi
             sample=$((sample+1))
         done
-        echo "Directory" "$out" "has a score $score / 3" >> results.out # print score for student
+        echo "Directory" "$out" "score $score / $numTests" >> results.out # print score for student
         numFiles=$((numFiles+1))
     done
     echo "" >> results.out
