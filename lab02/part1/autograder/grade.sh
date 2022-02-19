@@ -1,9 +1,7 @@
 #!/bin/bash
 
 # Check if we have enough arguments
-if [[ $# -eq 0 ]]; then
-    echo "Usage: ./grade.sh <filename>"
-elif [[ $# -gt 1 ]]; then
+if [[ $# -ne 1 ]]; then
     echo "Usage: ./grade.sh <filename>"
 else
 # Delete temporary files

@@ -15,37 +15,25 @@ int main() {
     // I.e. your program should do the equivalent of ./slow 5 | talk > results.out
     // WITHOUT using | and > from the shell.
     //
-    char func() {
-        int p[2];
 
-        if (pipe(p) < 0) {
-            perror("lab2p2e: ");
-        }
-        else if (fork() != 0) {
-            dup2(p[1], STDOUT_FILENO);
-            close(p[0]);
-            close(p[1]);
-            execlp("./slow", "./slow", "5", NULL);
-        }
-        else {
-            dup2(p[0], STDIN_FILENO);
-            close(p[0]);
-            close(p[1]);
-            execlp("./talk", "./talk", NULL);
-        }
-    }
+    int fp_out = open("./results.out", O_CREAT | O_RDWR, S_IRWXU);
+    dup2(fp_out, STDOUT_FILENO);
 
-    int secondPipe[2];
-    int fp_out = open("./results.out", O_CREAT | O_WRONLY);
-    if (pipe(secondPipe) < 0) {
-        perror("lab2p2e: ");
+    int p[2];
+    if (pipe(p) < 0) {
+        perror("lab2p2f: ");
     }
-    if(fork() != 0) {
-        dup2(secondPipe[1], STDOUT_FILENO);
-        dup2(fp_out, STDOUT_FILENO);
-        func();
-    } else {
-        wait(NULL);
+    else if (fork() != 0) {
+        dup2(p[1], STDOUT_FILENO);
+        close(p[0]);
+        close(p[1]);
+        execlp("./slow", "slow", "5", NULL);
+    }
+    else {
+        dup2(p[0], STDIN_FILENO);
+        close(p[0]);
+        close(p[1]);
+        execlp("./talk", "talk", NULL);
     }
 }
 
