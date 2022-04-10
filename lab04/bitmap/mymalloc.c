@@ -6,8 +6,7 @@
 
 char _heap[MEMSIZE] = {0};
 unsigned char bitmap[MEMSIZE/64];
-TNode *link = NULL;
-TNode **linklist = &link;
+TNode *linklist = NULL;
 
 // Do not change this. Used by the test harness.
 // You may however use this function in your code if necessary.
@@ -27,13 +26,12 @@ void print_memlist() {
 // to the first byte.
 void *mymalloc(size_t size) {
     long address = search_map(bitmap, MEMSIZE/8, size);
-    //printf(address);
     if (address != -1) {
         allocate_map(bitmap, address, size);
         TData *data = malloc(sizeof(TData));
         data->len = size;
-        TNode *newNode = make_node(&_heap[address], data);
-        insert_node(linklist, newNode, 0);
+        TNode *newNode = make_node(address, data);
+        insert_node(&linklist, newNode, 0);
         return &_heap[address];
     } else {
         return NULL;
@@ -42,10 +40,11 @@ void *mymalloc(size_t size) {
 
 // Frees memory pointer to by ptr.
 void myfree(void *ptr) {
-    TNode *removedNode = find_node(*linklist, ptr);
+    long position = get_index(ptr);
+    TNode *removedNode = find_node(linklist, position);
     if (removedNode == NULL) {
         return;
     }
     free_map(bitmap, get_index(ptr), removedNode->pdata->len);
-    delete_node(linklist, removedNode);
+    delete_node(&linklist, removedNode);
 }
