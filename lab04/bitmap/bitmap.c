@@ -38,6 +38,29 @@ void print_map(unsigned char *map, int len) {
 // Returns: Index to stretch of 0's of required length, -1 if no such stretch can be found
 
 long search_map(unsigned char *bitmap, int len, long num_zeroes) {
+    unsigned char mask = 0b10000000;
+    int consecEmpty = 0;
+    long emptyPosition = 0;
+    int found = 0;
+    for (int i = 0; i < len; i++) {
+        for (int j = 0; j < 8; j++) {
+            if (!(bitmap[i] & (mask >> j)) && !found) {
+                found = 1;
+                emptyPosition = i*8 + j;
+                consecEmpty = 1;
+            }
+            if (bitmap[i] & (mask >> j)) {
+                found = 0;
+                consecEmpty = 0;
+            }
+            if (!(bitmap[i] & (mask >> j)) && found) {
+                consecEmpty += 1;
+            }
+            if (consecEmpty == num_zeroes) {
+                return emptyPosition;
+            }
+        }
+    }
     return -1;
 } //main
 
@@ -50,6 +73,18 @@ long search_map(unsigned char *bitmap, int len, long num_zeroes) {
 // Returns: Nothing
 
 void set_map(unsigned char *map, long start, long length, int value) {
+    unsigned char mask = 0b10000000;
+    if (value == 0) {
+        for (int i = 0; i < length; i++) {
+            int position = start + i;
+            map[position/8] &= ~(mask >> (position % 8));
+        }
+    } else {
+        for (int i = 0; i < length; i++) {
+            int position = start + i;
+            map[position/8] |= (mask >> (position % 8));
+        }
+    }
 }
 
 // IMPLEMENTED FOR YOU
@@ -58,9 +93,7 @@ void set_map(unsigned char *map, long start, long length, int value) {
 // start = Starting index to mark
 // length = Number of bits to mark as "1"
 void allocate_map(unsigned char *map, long start, long length) {
-
     set_map(map, start, length, 1);
-
 }
 
 // IMPLEMENTED FOR YOU
